@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The open frontier is Chinese</title>
+<meta name="description" content="Where open-weight AI models come from in 2026: adoption, capability, distillation lineage and the safety research around them. Every number sourced.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f3ec; --nav: #efe9df; --card: #ffffff; --ink: #1c1614; --text: #675e58; --line: #e6ded2; --faint: #f1ece3;
+  --red: #c2362f; --red-deep: #8f1f1a; --yellow: #e2b63a; --yellow-pale: #f6e7b3;
+  --pastel-red: #f8e1da; --pastel-yellow: #f8efd0; --pastel-sand: #efe6d6;
+  --cn: #c2362f; --us: #8a8077; --other: #c9c0b4;
+  --font: "Inter Tight", Arial, sans-serif; --w: 300;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--text); font: 400 16px/1.35 var(--font); -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
+a { color: inherit; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+@media (max-width: 700px) { .wrap { padding: 0 16px; } }
+.navbar { position: sticky; top: 8px; z-index: 10; margin: 8px auto 0; }
+.navbar .bar { display: flex; align-items: center; gap: 18px; background: color-mix(in srgb, var(--nav) 92%, transparent); backdrop-filter: blur(8px); border-radius: 10px; padding: 10px 10px 10px 18px; }
+.brand { font-weight: 500; color: var(--ink); text-decoration: none; font-size: 15px; white-space: nowrap; }
+.brand i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--red); margin-right: 8px; vertical-align: 0; box-shadow: 14px 0 0 var(--yellow); margin-right: 22px; }
+.links { display: flex; gap: 2px; flex: 1; justify-content: center; overflow-x: auto; scrollbar-width: none; } .links::-webkit-scrollbar { display: none; }
+.links a { text-decoration: none; color: var(--ink); font-size: 14.5px; padding: 8px 11px; border-radius: 999px; white-space: nowrap; }
+.links a:hover, .links a.on { background: var(--card); }
+@media (max-width: 1000px) { .navbar .bar { flex-wrap: wrap; row-gap: 6px; padding: 10px; } .brand { order: 1; flex: 1; padding-left: 8px; } .navbar .btn { order: 2; }
+  .links { order: 3; flex: 1 0 100%; justify-content: flex-start; mask-image: linear-gradient(90deg, #000 88%, transparent); } }
+.btn { display: inline-flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--ink); color: #fff; text-decoration: none; font-size: 15px; font-weight: 500; white-space: nowrap; border: 1px solid var(--ink); }
+.btn.ghost { background: var(--card); color: var(--ink); border-color: var(--line); }
+h1 { font-weight: var(--w); font-size: clamp(40px, 5.4vw, 66px); line-height: 1.03; letter-spacing: -0.035em; color: var(--ink); margin: 0 0 22px; text-wrap: balance; }
+h2 { font-weight: var(--w); font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1; letter-spacing: -0.03em; color: var(--ink); margin: 0 0 12px; text-wrap: balance; }
+h3 { font-size: 18px; font-weight: 400; color: var(--ink); margin: 0 0 4px; letter-spacing: -0.01em; }
+.hl { color: var(--red); }
+.lede { font-size: 20px; line-height: 1.3; font-weight: var(--w); max-width: 32em; margin: 0 0 16px; }
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; margin: 0 0 16px; }
+.eyebrow::before { content: ""; width: 19px; height: 7px; background: radial-gradient(circle at 3.5px 3.5px, var(--red-deep) 3px, transparent 3.4px), radial-gradient(circle at 10.5px 3.5px, var(--red) 2.4px, transparent 2.8px), radial-gradient(circle at 16.5px 3.5px, var(--yellow) 1.9px, transparent 2.3px); }
+.hero { padding: 56px 0 24px; }
+.hero .grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 48px; align-items: center; }
+@media (max-width: 960px) { .hero .grid { grid-template-columns: 1fr; } }
+.hero .ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+#field { display: block; width: 100%; height: 380px; cursor: crosshair; touch-action: pan-y; } @media (max-width: 700px) { #field { height: 260px; } }
+.fieldcap { font-size: 12px; margin: 4px 0 0; text-align: right; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 24px; margin-top: 28px; border-top: 1px solid var(--line); }
+.stats div { padding: 18px 0 0; }
+.stats b { display: block; font-weight: var(--w); font-size: 40px; letter-spacing: -0.03em; color: var(--ink); line-height: 1; }
+.stats span { font-size: 13px; display: block; margin-top: 6px; }
+@media (max-width: 700px) { .stats { grid-template-columns: repeat(2, 1fr); row-gap: 14px; } .stats b { font-size: 34px; } }
+.band { position: relative; overflow: hidden; background: var(--red-deep); border-radius: 12px; padding: 64px 40px 48px; margin: 56px 0 88px; color: #f3dcd6; text-align: center; }
+@media (max-width: 700px) { .band { padding: 44px 18px 32px; } }
+.band .eyebrow { color: var(--yellow-pale); } .band .eyebrow::before { background: radial-gradient(circle at 3.5px 3.5px, #fff 3px, transparent 3.4px), radial-gradient(circle at 10.5px 3.5px, var(--yellow) 2.4px, transparent 2.8px), radial-gradient(circle at 16.5px 3.5px, var(--yellow-pale) 1.9px, transparent 2.3px); }
+.band h2 { color: #fff; font-size: clamp(30px, 4vw, 50px); max-width: 20em; margin: 0 auto 14px; }
+.band p { font-size: 17px; max-width: 40em; margin: 0 auto 28px; }
+.band svg text { fill: #f3dcd6; } .band svg .ink { fill: #fff; }
+#band-chart { max-width: 820px; margin: 0 auto; }
+.sechead { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 48px; margin-bottom: 40px; }
+@media (max-width: 1100px) { .sechead { grid-template-columns: 1fr; gap: 24px; } }
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+@media (max-width: 900px) { .cards { grid-template-columns: repeat(2, 1fr); } } @media (max-width: 600px) { .cards { grid-template-columns: 1fr; } }
+.fcard { display: flex; flex-direction: column; border-radius: 8px; padding: 22px 22px 20px; min-height: 200px; text-decoration: none; color: var(--ink); transition: transform .15s ease; }
+.fcard:hover { transform: translateY(-2px); }
+.fcard.a { background: var(--pastel-red); } .fcard.b { background: var(--pastel-yellow); } .fcard.c { background: var(--pastel-sand); }
+.fcard .k { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; font-weight: 500; opacity: .6; margin-bottom: 10px; }
+.fcard b { font-weight: var(--w); font-size: 44px; letter-spacing: -0.03em; line-height: 1; display: block; margin-bottom: 10px; }
+.fcard p { font-size: 14px; line-height: 1.35; margin: 0; color: #3f3733; }
+.fcard .more { margin-top: auto; padding-top: 12px; font-size: 14px; font-weight: 500; }
+main { padding: 0 0 60px; }
+section.s { padding-top: 72px; scroll-margin-top: 90px; }
+section.s > .head { max-width: 820px; margin-bottom: 22px; }
+section.s > .head p { font-size: 17px; line-height: 1.4; margin: 0; }
+.card { background: var(--card); border-radius: 8px; padding: 22px; }
+.controls { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; margin: 0 0 14px; }
+.seg { display: inline-flex; background: var(--nav); border-radius: 999px; padding: 3px; flex-wrap: wrap; }
+.seg button { font: 500 14px var(--font); border: 0; background: transparent; color: var(--text); height: 32px; padding: 0 14px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+.seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 2px rgb(0 0 0 / .06); }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+@media (min-width: 960px) { .grid2.split { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); } .grid2.even { grid-template-columns: 1fr 1fr; } }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; margin: 14px 0 0; }
+.legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; }
+.cap { font-size: 13px; margin: 0 0 12px; }
+.src { font-size: 12.5px; margin: 12px 0 0; } .src a { color: var(--text); }
+.note { font-size: 13px; margin: 10px 0 0; }
+.pill { display: inline-block; white-space: nowrap; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line); color: var(--text); }
+.pill.open { background: #e4efd9; border-color: #e4efd9; color: #2f5a1f; } .pill.custom { background: var(--pastel-yellow); border-color: var(--pastel-yellow); color: #6b4f08; } .pill.closed { background: var(--pastel-red); border-color: var(--pastel-red); color: var(--red-deep); }
+table.t { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.t th, table.t td { text-align: left; vertical-align: top; padding: 11px 10px 11px 0; border-bottom: 1px solid var(--faint); }
+table.t th { font-weight: 500; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; }
+table.t td:first-child { color: var(--ink); white-space: nowrap; }
+.scroll { overflow-x: auto; }
+.tl { list-style: none; margin: 0; padding: 0 0 0 18px; border-left: 2px solid var(--line); }
+.tl li { position: relative; padding: 0 0 16px 14px; font-size: 14.5px; }
+.tl li::before { content: ""; position: absolute; left: -24px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--red); border: 2px solid var(--bg); }
+.tl li b { display: block; color: var(--ink); font-weight: 500; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2px; }
+.list { margin: 0; padding: 0; list-style: none; } .list li { padding: 10px 0; border-bottom: 1px solid var(--faint); font-size: 14.5px; } .list li b { color: var(--ink); font-weight: 500; display: block; }
+.why { max-width: 760px; } .why p { font-size: 18px; line-height: 1.4; margin: 0 0 14px; color: var(--ink); font-weight: var(--w); }
+.why p span { color: var(--text); }
+svg { display: block; overflow: visible; } svg text { font-family: var(--font); font-variant-numeric: tabular-nums; fill: var(--text); } svg .ink { fill: var(--ink); }
+.hit { fill: transparent; } .hit:hover { fill: rgb(0 0 0 / .03); }
+#tip { position: fixed; z-index: 30; max-width: 300px; background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 10px 13px; font-size: 13px; line-height: 1.45; pointer-events: none; box-shadow: 0 12px 32px rgb(28 22 20 / .12); }
+#tip b { font-weight: 500; color: var(--ink); }
+footer .foot { padding: 48px 0 40px; border-top: 1px solid var(--line); margin-top: 60px; font-size: 14px; }
+footer .foot ul { columns: 2; column-gap: 40px; padding: 0; margin: 14px 0 0; list-style: none; } footer .foot li { break-inside: avoid; padding: 4px 0; } @media (max-width: 700px) { footer .foot ul { columns: 1; } }
+footer .fine { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; font-size: 13px; padding: 18px 0 36px; border-top: 1px solid var(--line); }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise .6s cubic-bezier(.2,.7,.2,1) both; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<div class="wrap navbar"><div class="bar">
+  <a class="brand" href="#top"><i></i>Open weights, 2026</a>
+  <nav class="links" aria-label="Sections">
+    <a href="#adoption">Adoption</a><a href="#usage">Usage</a><a href="#capability">Capability</a><a href="#distillation">Distillation</a><a href="#openness">Openness</a><a href="#research">Research</a><a href="#why">Why it matters</a>
+  </nav>
+  <a class="btn ghost" id="ghlink" href="https://github.com/ggrazianoknapp/open-weights-china">GitHub</a>
+</div></div>
+
+<main id="top">
+<div class="wrap">
+  <div class="hero">
+    <div class="grid">
+      <div class="rise">
+        <div class="eyebrow">Open-weight models · 2026</div>
+        <h1>The open frontier is <span class="hl">Chinese</span>.</h1>
+        <p class="lede">The models anyone can download and look inside now mostly come from China. They sit about four months behind the closed frontier, several were trained on its outputs, and the labs that make them share a campus with China's safety researchers.</p>
+        <p class="lede">This page puts numbers on each of those claims.</p>
+        <div class="ctas"><a class="btn" href="#why">Why it matters</a><a class="btn ghost" href="#sources">Sources</a></div>
+      </div>
+      <div class="rise"><canvas id="field" role="img" aria-label="Animated field of dots, red for Chinese models and grey for the rest"></canvas><p class="fieldcap">Each dot is a share of Hugging Face downloads. Hover to scatter.</p></div>
+    </div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <div class="band rise">
+    <div class="eyebrow">Sharpest result</div>
+    <h2>Every top open-weight model is Chinese. The best American one scores 26.</h2>
+    <p>Artificial Analysis Intelligence Index, late September 2026. Hover a dot.</p>
+    <div id="band-chart"></div>
+  </div>
+
+  <div class="sechead">
+    <div><div class="eyebrow">Findings</div><h2>Six numbers</h2><p class="cap">Tap a card for the chart behind it.</p></div>
+    <div class="cards" id="cards"></div>
+  </div>
+
+<section class="s" id="adoption">
+  <div class="head"><div class="eyebrow">Adoption</div><h2>Qwen is the base model the open ecosystem <span class="hl">builds on</span></h2>
+    <p>Hugging Face's own counts, January to August 2026. Downloads can be inflated by bots; derivative models are the harder number, because each one is a developer choosing a base.</p></div>
+  <div class="controls"><div class="seg" id="ad-seg" role="group"><button type="button" data-v="downloads" aria-pressed="true">Downloads</button><button type="button" data-v="derivatives" aria-pressed="false">Derivative models</button><button type="button" data-v="gguf" aria-pressed="false">Local inference</button></div></div>
+  <div class="grid2 split">
+    <div class="card"><p class="cap" id="ad-cap"></p><div id="ad-chart"></div><p class="src" id="ad-src"></p></div>
+    <div class="card"><h3>Share of new fine-tunes built on Qwen</h3><p class="cap">Of models fine-tuned or adapted on the Hub each month.</p><div id="qwen-share"></div><p class="src">Source: <a href="https://www.aboutchromebooks.com/qwen-ai-statistics/">ATOM Report (arXiv 2604.07190)</a></p></div>
+  </div>
+</section>
+
+<section class="s" id="usage">
+  <div class="head"><div class="eyebrow">Usage</div><h2>In production, Chinese open weights took the <span class="hl">volume</span></h2>
+    <p>OpenRouter routes developer requests to hundreds of models. Vercel's gateway serves AI apps. Both show the same move: open Chinese models carry the bulk of tokens, closed US models the premium slice.</p></div>
+  <div class="grid2 even">
+    <div class="card"><h3>Share of OpenRouter tokens to Chinese open models</h3><p class="cap">Percent of tokens routed. Dashed: US models' share, for contrast.</p><div id="or-chart"></div><p class="note" id="or-note"></p><p class="src">Source: <a href="https://manhattan.institute/article/an-american-answer-to-chinas-open-ai-models-a-safe-harbor-for-open-weights">OpenRouter / a16z via Manhattan Institute</a>; <a href="https://newscord.org/article/chinese-open-weight-models-surpass-us-models-on-hugging-face-and-openrouter--Story_20260626_ItsnotaboutAnthropice54000ee">Newscord</a></p></div>
+    <div class="card"><h3>Open-weight share of tokens on Vercel's AI Gateway</h3><p class="cap">Percent of all tokens, 2026. Open models were under 4% of spend.</p><div id="vc-chart"></div><p class="src">Source: <a href="https://newscord.org/article/chinese-open-weight-models-surpass-us-models-on-hugging-face-and-openrouter--Story_20260626_ItsnotaboutAnthropice54000ee">Vercel Production Index, Jul 2026</a></p></div>
+  </div>
+</section>
+
+<section class="s" id="capability">
+  <div class="head"><div class="eyebrow">Capability</div><h2>Four months behind the closed frontier, and the gap to the <span class="hl">US</span> is 2.7%</h2>
+    <p>Two different gaps. Left: the best Chinese model against the best US model of any kind, on Arena. Right: how 2025's notable models were released, by country.</p></div>
+  <div class="grid2 even">
+    <div class="card"><h3>Lead of the top US model over the top Chinese model</h3><p class="cap">Percent, Arena leaderboard, per the Stanford AI Index.</p><div id="gap-chart"></div><p class="src">Source: <a href="https://www.digitalapplied.com/blog/stanford-ai-index-2026-numbers-that-matter-digest">Stanford AI Index 2026</a></p></div>
+    <div class="card"><h3>How each country releases its models</h3><p class="cap">Share of models with a known release type, Jan 2025 to Sep 2026.</p><div id="rel-chart"></div><p class="note">Notable models in 2025: US 59 (11 open), China 35 (28 open). Labs that opened a >100B-parameter model of their own in 2026: China 14, Europe 2.</p><p class="src">Source: <a href="https://www.secondtalent.com/resources/countries-that-build-the-most-ai-models/">Epoch AI via Stanford AI Index and Second Talent</a>; <a href="https://mrkt30.com/chinese-llms-2026-map/">mrkt30</a></p></div>
+  </div>
+</section>
+
+<section class="s" id="distillation">
+  <div class="head"><div class="eyebrow">Distillation</div><h2>"Distilled from the frontier" is on the <span class="hl">record</span></h2>
+    <p>Anthropic has named seven China-based labs as having trained on Claude outputs at scale. These are Anthropic's attributions; the labs have not confirmed them. The labs named are the ones that ship the top open models.</p></div>
+  <div class="grid2 split">
+    <div class="card"><h3>Claude exchanges Anthropic attributes to each lab</h3><p class="cap">Millions. Periods differ; hover for each.</p><div id="ds-chart"></div><p class="src">Source: <a href="https://www.cnbc.com/2026/09/11/chinese-ai-labs-moonshot-deepseek-alibaba-anthropic.html">CNBC</a>, <a href="https://qz.com/anthropic-chinese-ai-labs-distillation-alibaba-deepseek-moonshot-091126">Quartz</a>, <a href="https://techcrunch.com/2026/02/23/anthropic-accuses-chinese-ai-labs-of-mining-claude-as-us-debates-ai-chip-exports/">TechCrunch</a></p></div>
+    <div class="card"><h3>Timeline</h3><ul class="tl" id="ds-tl"></ul></div>
+  </div>
+</section>
+
+<section class="s" id="openness">
+  <div class="head"><div class="eyebrow">Openness</div><h2>The top tier is starting to <span class="hl">close</span></h2>
+    <p>Since spring 2026 the biggest labs keep their best model API-only and open the tier below. The substrate is still there, but the licences are tightening. Filter by status.</p></div>
+  <div class="controls"><div class="seg" id="op-seg" role="group"><button type="button" data-v="all" aria-pressed="true">All</button><button type="button" data-v="open">Open, permissive</button><button type="button" data-v="custom">Open, custom licence</button><button type="button" data-v="closed">Flagship closed</button></div></div>
+  <div class="card"><div class="scroll"><table class="t" id="op-table"></table></div><p class="src">Source: <a href="https://www.digitalapplied.com/blog/qwen-closed-flagship-pivot-open-weight-retreat-2026">Digital Applied</a>, <a href="https://insiderllm.com/guides/qwen-open-weights-vs-closed-frontier-2026/">InsiderLLM</a>, <a href="https://geotoolbox.ai/blog/chinese-ai-models-compared">geotoolbox</a>, <a href="https://mrkt30.com/chinese-llms-2026-map/">mrkt30</a></p></div>
+</section>
+
+<section class="s" id="research">
+  <div class="head"><div class="eyebrow">Research</div><h2>The safety research grew <span class="hl">fivefold</span>, and it sits in universities</h2>
+    <p>Concordia AI tracks frontier AI safety papers from Chinese institutions. Output rose from about 12 a month in 2023 to 57 in April 2026. Mechanistic interpretability went from a niche to roughly 15% of it.</p></div>
+  <div class="grid2 even">
+    <div class="card"><h3>Chinese frontier AI safety papers per month</h3><p class="cap">Concordia AI database. Interpretability share by Q1 2026: 15%.</p><div id="sp-chart"></div><p class="src">Source: <a href="https://aisafetychina.com/">Concordia AI, State of AI Safety in China 2026</a>; <a href="https://www.chinatalk.media/p/chinas-ai-safety-money-problem">ChinaTalk</a></p></div>
+    <div class="card"><h3>Where the 28 key research groups sit</h3><p class="cap">Groups with a senior researcher who led five or more frontier safety papers, Jan 2025 to Apr 2026.</p><div id="grp-chart"></div><p class="note">Top universities: Tsinghua, Peking, Fudan. Shanghai AI Lab alone co-authors about one paper in ten. China's share of global AI publications: 17.8% (US ~7.5%); of citations: 20.6% (US 12.6%).</p></div>
+  </div>
+  <div class="card" style="margin-top:6px"><h3>What runs through Tsinghua</h3><ul class="list" id="ts-list"></ul></div>
+</section>
+
+<section class="s" id="why">
+  <div class="head"><div class="eyebrow">Why it matters</div><h2>If you want to read a frontier model's internals, you are reading a <span class="hl">Chinese checkpoint</span></h2></div>
+  <div class="card why">
+    <p>Interpretability needs weights. <span>Probes, SAEs and attribution all run on activations, and closed models do not give you any.</span></p>
+    <p>The open models near the frontier are Chinese, and several were trained on the closed frontier's outputs. <span>So a Chinese open model is the closest thing to a readable copy of a closed US model, and the distillation lineage is what makes the copy faithful.</span></p>
+    <p>That makes measurement of deception, evaluation awareness and inherited traits a question about Chinese weights. <span>The people who built them, and a growing share of the people studying them, are in Beijing and Shanghai.</span></p>
+    <p>The window may be narrowing. <span>Flagships are going API-only. The time to calibrate open readers against closed authors is while frontier-adjacent weights are still downloadable.</span></p>
+  </div>
+</section>
+</div>
+</main>
+
+<footer><div class="wrap">
+  <div class="foot" id="sources"><div class="eyebrow">Sources</div><p>Figures were taken from the pages below as of <span id="asof"></span>. The Hugging Face and Concordia numbers are from the primary reports; leaderboard scores come from secondary roundups and move monthly.</p><ul id="src-list"></ul></div>
+  <div class="fine"><span>Built by Gigi Graziano Knapp. Data in <code>data.js</code>; every chart is drawn from it.</span><span>Chinese labs in red, US in grey, by design.</span></div>
+</div></footer>
+<div id="tip" hidden></div>
+
+<script src="data.js"></script>
+<script>
+(() => {
+const D = window.DATA, $ = s => document.querySelector(s), NS = "http://www.w3.org/2000/svg";
+const CN = getComputedStyle(document.documentElement).getPropertyValue("--cn").trim(), US = getComputedStyle(document.documentElement).getPropertyValue("--us").trim(), YL = getComputedStyle(document.documentElement).getPropertyValue("--yellow").trim();
+const fmt = n => n >= 1000 ? Math.round(n).toLocaleString("en") : (Number.isInteger(n) ? n : n.toFixed(1));
+const el = (t, a = {}, parent) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (parent) parent.appendChild(e); return e; };
+const txt = (p, x, y, s, a = {}) => { const t = el("text", { x, y, "font-size": 13, ...a }, p); t.textContent = s; return t; };
+
+// tooltip
+const tip = $("#tip");
+function hover(node, html) {
+  node.addEventListener("pointerenter", () => { tip.innerHTML = html; tip.hidden = false; });
+  node.addEventListener("pointermove", e => { const w = tip.offsetWidth, h = tip.offsetHeight; let x = e.clientX + 14, y = e.clientY + 14; if (x + w > innerWidth - 8) x = e.clientX - w - 14; if (y + h > innerHeight - 8) y = e.clientY - h - 14; tip.style.left = x + "px"; tip.style.top = y + "px"; });
+  node.addEventListener("pointerleave", () => tip.hidden = true);
+}
+
+// horizontal bars
+function hbars(host, rows, { max, unit = "", width = 760, row = 38, label = 150, dark = false, color = r => r.cn ? CN : US } = {}) {
+  host.innerHTML = ""; max = max || Math.max(...rows.map(r => r.v));
+  const pad = 8, W = Math.max(320, Math.min(width, host.clientWidth || width)), lab = Math.min(label, W * 0.34), H = rows.length * row + pad;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, width: "100%", role: "img" }, host);
+  const x0 = lab + 10, x1 = W - 70;
+  rows.forEach((r, i) => {
+    const y = pad + i * row, g = el("g", {}, svg);
+    txt(g, lab, y + 20, r.k, { "text-anchor": "end", class: dark ? "" : "ink", "font-size": 13.5 });
+    el("rect", { x: x0, y: y + 6, width: x1 - x0, height: 22, rx: 4, fill: dark ? "rgba(255,255,255,.08)" : "var(--faint)" }, g);
+    const w = (x1 - x0) * r.v / max;
+    const bar = el("rect", { x: x0, y: y + 6, width: 0, height: 22, rx: 4, fill: color(r) }, g);
+    requestAnimationFrame(() => { bar.style.transition = "width .7s cubic-bezier(.2,.7,.2,1)"; bar.setAttribute("width", Math.max(2, w)); });
+    txt(g, x0 + w + 8, y + 21, fmt(r.v) + unit, { class: dark ? "" : "ink", "font-size": 13.5, "font-weight": 500 });
+    const hit = el("rect", { x: 0, y, width: W, height: row, class: "hit" }, g);
+    hover(hit, `<b>${r.k}</b><br>${fmt(r.v)}${unit}${r.period ? " · " + r.period : ""}${r.note ? "<br>" + r.note : ""}`);
+  });
+}
+
+// line / step chart over dates
+function line(host, series, { yMax, unit = "%", width = 520, height = 220, labels = true, dashed = [] } = {}) {
+  host.innerHTML = "";
+  const W = Math.max(300, Math.min(width, host.clientWidth || width)), H = height, m = { l: 36, r: 16, t: 14, b: 30 };
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, width: "100%" }, host);
+  const all = series.flat(), toT = d => { const [y, mo] = d.split("-").map(Number); return y + (mo - 1) / 12; };
+  const t0 = Math.min(...all.map(p => toT(p.d))), t1 = Math.max(...all.map(p => toT(p.d)));
+  yMax = yMax || Math.ceil(Math.max(...all.map(p => p.v)) / 10) * 10;
+  const X = t => m.l + (W - m.l - m.r) * (t - t0) / (t1 - t0 || 1), Y = v => m.t + (H - m.t - m.b) * (1 - v / yMax);
+  for (let v = 0; v <= yMax; v += yMax / 4) { el("line", { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v), stroke: "var(--faint)" }, svg); txt(svg, m.l - 6, Y(v) + 4, fmt(v) + unit, { "text-anchor": "end", "font-size": 11.5 }); }
+  for (let y = Math.ceil(t0); y <= Math.floor(t1); y++) txt(svg, X(y), H - 8, y, { "text-anchor": "middle", "font-size": 11.5 });
+  series.forEach((pts, si) => {
+    const d = pts.map((p, i) => (i ? "L" : "M") + X(toT(p.d)) + "," + Y(p.v)).join(" ");
+    const path = el("path", { d, fill: "none", stroke: si ? US : CN, "stroke-width": 2.5, "stroke-linejoin": "round", "stroke-dasharray": dashed.includes(si) ? "5 5" : "none" }, svg);
+    const L = path.getTotalLength(); path.style.strokeDasharray = dashed.includes(si) ? "5 5" : L; if (!dashed.includes(si)) { path.style.strokeDashoffset = L; requestAnimationFrame(() => { path.style.transition = "stroke-dashoffset 1s ease-out"; path.style.strokeDashoffset = 0; }); }
+    pts.forEach(p => { const c = el("circle", { cx: X(toT(p.d)), cy: Y(p.v), r: 5, fill: si ? US : CN, stroke: "#fff", "stroke-width": 2 }, svg); hover(c, `<b>${p.lbl || p.d}</b><br>${fmt(p.v)}${unit}`);
+      if (labels) txt(svg, X(toT(p.d)), Y(p.v) - 11, fmt(p.v) + unit, { "text-anchor": "middle", class: "ink", "font-size": 12.5, "font-weight": 500 }); });
+  });
+}
+
+// dot strip (index scores)
+function strip(host, rows, { min = 20, max = 60, dark = false } = {}) {
+  host.innerHTML = "";
+  const W = Math.max(320, Math.min(820, host.clientWidth || 820)), H = 150, m = { l: 20, r: 20 };
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, width: "100%" }, host);
+  const X = v => m.l + (W - m.l - m.r) * (v - min) / (max - min);
+  el("line", { x1: m.l, x2: W - m.r, y1: 80, y2: 80, stroke: dark ? "rgba(255,255,255,.3)" : "var(--line)" }, svg);
+  for (let v = min; v <= max; v += 10) { el("line", { x1: X(v), x2: X(v), y1: 76, y2: 84, stroke: dark ? "rgba(255,255,255,.3)" : "var(--line)" }, svg); txt(svg, X(v), 104, v, { "text-anchor": "middle", "font-size": 12 }); }
+  txt(svg, W / 2, 128, "Artificial Analysis Intelligence Index (higher is more capable)", { "text-anchor": "middle", "font-size": 12 });
+  const sorted = [...rows].sort((a, b) => a.v - b.v); let lastX = -99, lane = 0;
+  sorted.forEach(r => { const x = X(r.v); lane = (x - lastX < 26) ? (lane + 1) % 3 : 0; lastX = x; const y = 80 - (lane ? 22 * lane : 0);
+    const fill = r.open ? (r.cn ? (dark ? "#f3b5ad" : CN) : (dark ? "#fff" : US)) : YL;
+    const c = el("circle", { cx: x, cy: y, r: r.open ? 9 : 11, fill, stroke: dark ? "var(--red-deep)" : "#fff", "stroke-width": 2, class: "clickable" }, svg);
+    hover(c, `<b>${r.k}</b><br>Index ${r.v} · ${r.open ? "open weights" : "closed"} · ${r.cn ? "China" : "US"}${r.note ? "<br>" + r.note : ""}`);
+    if (!r.open || !r.cn) txt(svg, x, y - 16, r.k.split(" (")[0], { "text-anchor": "middle", "font-size": 12, class: dark ? "" : "ink" });
+  });
+  const lg = el("g", {}, svg); let lx = m.l;
+  [["Chinese, open", dark ? "#f3b5ad" : CN], ["US, open", dark ? "#fff" : US], ["US, closed", YL]].forEach(([k, c]) => { el("circle", { cx: lx + 5, cy: 14, r: 5, fill: c }, lg); const t = txt(lg, lx + 15, 18, k, { "font-size": 12 }); lx += 15 + k.length * 6.6 + 22; });
+}
+
+// stacked 100% bars
+function stacked(host, rows) {
+  host.innerHTML = "";
+  const W = Math.max(320, Math.min(520, host.clientWidth || 520)), row = 44, H = rows.length * row + 30, lab = 100;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, width: "100%" }, host);
+  const keys = [["open", "Open weights", CN], ["api", "API only", YL], ["none", "Unreleased / hosted", "var(--other)"]];
+  rows.forEach((r, i) => { const y = i * row + 6; txt(svg, lab - 8, y + 20, r.k, { "text-anchor": "end", class: "ink", "font-size": 13.5 }); let x = lab;
+    keys.forEach(([k, name, c]) => { const w = (W - lab - 10) * r[k] / 100; const rc = el("rect", { x, y: y + 6, width: Math.max(0, w - 2), height: 22, rx: 3, fill: c }, svg); hover(rc, `<b>${r.k}</b><br>${name}: ${r[k]}%`); if (w > 36) txt(svg, x + w / 2 - 1, y + 21, r[k] + "%", { "text-anchor": "middle", "font-size": 12, style: "fill:" + (k === "none" ? "var(--ink)" : "#fff"), "font-weight": 500 }); x += w; }); });
+  let lx = lab; keys.forEach(([k, name, c]) => { el("rect", { x: lx, y: H - 14, width: 10, height: 10, rx: 2, fill: c }, svg); txt(svg, lx + 15, H - 5, name, { "font-size": 12 }); lx += 15 + name.length * 6.4 + 20; });
+}
+
+// donut
+function donut(host, parts) {
+  host.innerHTML = ""; const W = Math.max(280, Math.min(420, host.clientWidth || 420)), R = 70, r = 46, cx = 90, cy = 90, total = parts.reduce((s, p) => s + p.v, 0);
+  const svg = el("svg", { viewBox: `0 0 ${W} 180`, width: "100%" }, host); let a0 = -Math.PI / 2;
+  parts.forEach(p => { const a1 = a0 + 2 * Math.PI * p.v / total, big = a1 - a0 > Math.PI ? 1 : 0;
+    const d = `M${cx + R * Math.cos(a0)},${cy + R * Math.sin(a0)} A${R},${R} 0 ${big} 1 ${cx + R * Math.cos(a1)},${cy + R * Math.sin(a1)} L${cx + r * Math.cos(a1)},${cy + r * Math.sin(a1)} A${r},${r} 0 ${big} 0 ${cx + r * Math.cos(a0)},${cy + r * Math.sin(a0)} Z`;
+    const path = el("path", { d, fill: p.c, stroke: "#fff", "stroke-width": 2 }, svg); hover(path, `<b>${p.k}</b><br>${p.v} of ${total} groups`); a0 = a1; });
+  txt(svg, cx, cy + 6, total, { "text-anchor": "middle", class: "ink", "font-size": 28, "font-weight": 300 });
+  parts.forEach((p, i) => { const y = 50 + i * 30; el("circle", { cx: 200, cy: y - 5, r: 6, fill: p.c }, svg); txt(svg, 214, y, `${p.k}: ${p.v}`, { "font-size": 13.5, class: "ink" }); });
+}
+
+// ---- render ----
+$("#asof").textContent = D.asOf;
+$("#stats").innerHTML = D.stats.map(s => `<div><b>${s.n}</b><span>${s.t}</span></div>`).join("");
+strip($("#band-chart"), D.aaIndex.rows, { dark: true });
+
+const cards = [
+  ["a", "#adoption", "151k", "models on Hugging Face are built on Qwen. 2.6× Meta's whole footprint, 4.7× Llama."],
+  ["b", "#usage", "45%", "of OpenRouter's weekly tokens went to Chinese labs by April 2026, up from 1.2% in late 2024."],
+  ["c", "#capability", "2.7%", "lead of the best US model over the best Chinese one on Arena, down from 17.5–31.6 points in 2023."],
+  ["c", "#distillation", "151M", "Claude exchanges Anthropic attributes to Alibaba in three months of 2026, used to train Qwen."],
+  ["a", "#openness", "3 of 9", "major Chinese labs now keep their flagship API-only. Six still open the top tier, half under custom licences."],
+  ["b", "#research", "57", "frontier safety papers a month from Chinese institutions in April 2026, up from 12 in 2023."]
+];
+$("#cards").innerHTML = cards.map(([c, h, n, p]) => `<a class="fcard ${c} rise" href="${h}"><div class="k">${h.slice(1)}</div><b>${n}</b><p>${p}</p><div class="more">See the chart →</div></a>`).join("");
+
+// adoption toggle
+const adViews = {
+  downloads: { rows: D.hfDownloads.rows, unit: "M", cap: "Downloads on the Hugging Face Hub, Jan–Aug 2026, millions. Alibaba itself claims 3 billion across all platforms.", src: D.hfDownloads.src },
+  derivatives: { rows: D.derivatives.rows, unit: "", cap: "Models on the Hub derived from each family. Meta and Llama figures are back-computed from Hugging Face's stated ratios. New Qwen derivatives arrive at 180–210 a day.", src: D.derivatives.src },
+  gguf: { rows: D.gguf.rows, unit: "M / month", cap: "GGUF (llama.cpp) downloads a month, millions. Llama has slightly more GGUF repositories than Qwen but a fifth of the traffic.", src: D.gguf.src }
+};
+function ad(v) { const a = adViews[v]; $("#ad-cap").textContent = a.cap; hbars($("#ad-chart"), a.rows, { unit: a.unit, width: 700 }); $("#ad-src").innerHTML = `Source: <a href="${a.src.u}">${a.src.t}</a>`; }
+$("#ad-seg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("#ad-seg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); ad(b.dataset.v); });
+ad("downloads");
+line($("#qwen-share"), [D.qwenShare.pts], { yMax: 80, height: 200 });
+
+// usage
+line($("#or-chart"), [D.openrouter.pts, D.openrouter.us], { yMax: 80, dashed: [1] });
+$("#or-note").textContent = D.openrouter.top6note;
+line($("#vc-chart"), [D.vercel.pts], { yMax: 40, height: 200 });
+
+// capability
+line($("#gap-chart"), [D.gap.pts], { yMax: 25, height: 220 });
+stacked($("#rel-chart"), D.releases.openShare);
+
+// distillation
+hbars($("#ds-chart"), D.distill.rows, { unit: "M", width: 640, color: () => CN });
+$("#ds-tl").innerHTML = D.distill.events.map(e => `<li><b>${e.d}</b>${e.t}</li>`).join("");
+
+// openness
+function opTable(f) {
+  const rows = D.openness.rows.filter(r => f === "all" || r.status === f);
+  const name = { open: "Open, permissive", custom: "Open, custom licence", closed: "Flagship closed" };
+  $("#op-table").innerHTML = `<thead><tr><th>Lab</th><th>Flagship</th><th>Status</th><th>Licence</th><th>Note</th></tr></thead><tbody>` +
+    rows.map(r => `<tr><td>${r.lab}</td><td>${r.flagship}</td><td><span class="pill ${r.status}">${name[r.status]}</span></td><td>${r.lic}</td><td>${r.note}</td></tr>`).join("") + `</tbody>`;
+}
+$("#op-seg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("#op-seg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); opTable(b.dataset.v); });
+opTable("all");
+
+// research
+line($("#sp-chart"), [D.safetyPapers.pts], { yMax: 60, unit: "", height: 220 });
+donut($("#grp-chart"), [{ k: "Universities", v: D.safetyPapers.groups.univ, c: CN }, { k: "State-backed labs", v: D.safetyPapers.groups.state, c: YL }, { k: "Industry and other", v: D.safetyPapers.groups.other, c: "var(--other)" }]);
+$("#ts-list").innerHTML = D.tsinghua.map(t => `<li><b>${t.k}</b>${t.t}</li>`).join("");
+
+// sources
+$("#src-list").innerHTML = D.sources.map(s => `<li><a href="${s.u}">${s.t}</a></li>`).join("");
+
+// nav highlight
+const secs = [...document.querySelectorAll("section.s")], links = [...document.querySelectorAll(".links a")];
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) links.forEach(l => l.classList.toggle("on", l.getAttribute("href") === "#" + e.target.id)); }), { rootMargin: "-40% 0px -55% 0px" });
+secs.forEach(s => io.observe(s));
+
+// hero field: 100 dots = download shares. 41 red (China), 36 grey (US), 23 sand (other). Hover scatters.
+(() => {
+  const c = $("#field"), ctx = c.getContext("2d"); let W, H, dots = [], mouse = null, reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function size() { const r = c.getBoundingClientRect(); W = c.width = r.width * devicePixelRatio; H = c.height = r.height * devicePixelRatio; ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0); W = r.width; H = r.height; layout(); }
+  function layout() { dots = []; const cols = 10, gx = W / (cols + 1), gy = H / 11; for (let i = 0; i < 100; i++) { const col = i % cols, row = Math.floor(i / cols); const color = i < 41 ? CN : i < 77 ? US : "#d9cfbf"; dots.push({ hx: gx * (col + 1), hy: gy * (row + 1), x: Math.random() * W, y: Math.random() * H, vx: 0, vy: 0, r: i < 41 ? 7 : 6, color, ph: Math.random() * 6.28 }); } }
+  function step(t) { ctx.clearRect(0, 0, W, H); for (const d of dots) { let ax = (d.hx - d.x) * .04, ay = (d.hy - d.y) * .04; if (mouse) { const dx = d.x - mouse.x, dy = d.y - mouse.y, dist = Math.hypot(dx, dy); if (dist < 110) { const f = (110 - dist) / 110 * 6; ax += dx / dist * f; ay += dy / dist * f; } } d.vx = (d.vx + ax) * .82; d.vy = (d.vy + ay) * .82; d.x += d.vx; d.y += d.vy; const wob = reduce ? 0 : Math.sin(t / 900 + d.ph) * 1.2; ctx.beginPath(); ctx.arc(d.x, d.y + wob, d.r, 0, 6.28); ctx.fillStyle = d.color; ctx.fill(); } requestAnimationFrame(step); }
+  c.addEventListener("pointermove", e => { const r = c.getBoundingClientRect(); mouse = { x: e.clientX - r.left, y: e.clientY - r.top }; }); c.addEventListener("pointerleave", () => mouse = null);
+  addEventListener("resize", size); size(); requestAnimationFrame(step);
+})();
+})();
+</script>
+</body>
+</html>
